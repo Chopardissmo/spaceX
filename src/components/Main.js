@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import SatSetting from "./SatSetting";
 import SatelliteList from "./SatelliteList";
+import WorldMap from "./WorldMap";
 import { NEARBY_SATELLITE, STARLINK_CATEGORY, SAT_API_KEY } from "../constant";
 
 export default class Main extends Component {
@@ -85,7 +86,9 @@ export default class Main extends Component {
                         trackOnclick={this.trackOnClick}
                     />
                 </div>
-                <div className="right-side">right</div>
+                <div className="right-side">
+                    <WorldMap />
+                </div>
             </div>
         );
     }
