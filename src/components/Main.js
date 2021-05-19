@@ -11,6 +11,7 @@ export default class Main extends Component {
             satInfo: null,
             settings: null,
             loadingSatellites: false,
+            selected: [],
         };
     }
 
@@ -35,6 +36,7 @@ export default class Main extends Component {
                 this.setState({
                     satInfo: response.data,
                     loadingSatellites: false,
+                    selected: [],
                 });
             })
             .catch((error) => {
@@ -43,6 +45,30 @@ export default class Main extends Component {
                     loadingSatellites: false,
                 });
             });
+    };
+
+    trackOnClick = () => {
+        console.log(`tracking ${this.state.selected}`);
+    };
+
+    addOrRemove = (item, status) => {
+        let { selected: list } = this.state;
+        const found = list.some((entry) => entry.satid === item.satid);
+
+        if (status && !found) {
+            list.push(item);
+        }
+
+        if (!status && found) {
+            list = list.filter((entry) => {
+                return entry.satid !== item.satid;
+            });
+        }
+
+        console.log(list);
+        this.setState({
+            selected: list,
+        });
     };
 
     render() {
@@ -54,6 +80,9 @@ export default class Main extends Component {
                     <SatelliteList
                         satInfo={satInfo}
                         loading={loadingSatellites}
+                        onSelectionChange={this.addOrRemove}
+                        disableTrack={this.state.selected.length === 0}
+                        trackOnclick={this.trackOnClick}
                     />
                 </div>
                 <div className="right-side">right</div>
