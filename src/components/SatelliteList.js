@@ -40,7 +40,7 @@ export default class SatelliteList extends Component {
                 </Button>
 
                 <div className="list-item">
-                    <label>Track Duration </label>
+                    <label>Track Duration(s) </label>
                     <InputNumber
                         min={0}
                         max={90}

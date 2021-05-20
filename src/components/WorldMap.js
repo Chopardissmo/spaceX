@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Spin } from "antd";
-import { feature } from "topojson-client";
 import axios from "axios";
+import { Spin } from "antd";
+
+import { feature } from "topojson-client";
 import { geoKavrayskiy7 } from "d3-geo-projection";
 import { geoGraticule, geoPath } from "d3-geo";
 import { select as d3Select } from "d3-selection";
@@ -12,8 +13,8 @@ const width = 960;
 const height = 600;
 
 export default class WorldMap extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             map: null,
         };
@@ -58,25 +59,42 @@ export default class WorldMap extends Component {
             context.stroke();
 
             // draw the graticule
-            context.strokeStyle = "rgba(220, 220, 220, 0.1)";
+            // context.strokeStyle = "rgba(220, 220, 220, 0.1)";
+            // context.beginPath();
+            // path(graticule());
+            // context.lineWidth = 0.1;
+            // context.stroke();
+
+            // // draw the graticule outline
+            // context.beginPath();
+            // context.lineWidth = 0.5;
+            // path(graticule.outline());
+            // context.stroke();
+        });
+
+        for (let temp = 1; temp < 15; temp++) {
+            // draw the graticule
+            context.strokeStyle = "rgba(220, 220, 220, 0.5)";
             context.beginPath();
             path(graticule());
-            context.lineWidth = 0.1;
+            context.lineWidth = 0.5;
             context.stroke();
 
             // draw the graticule outline
             context.beginPath();
-            context.lineWidth = 0.5;
+            context.lineWidth = 0.7;
             path(graticule.outline());
             context.stroke();
-        });
+        }
     }
 
     render() {
-        const { loading } = this.props;
+        const { loading, refTrack } = this.props;
         return (
             <div className="map-box">
                 <canvas className="map" ref={this.refMap} />
+                <canvas className="track" ref={refTrack} />
+                <div className="hint"></div>
                 {loading ? <Spin tip="Loading..." /> : <></>}
             </div>
         );
