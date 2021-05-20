@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Spin } from "antd";
 import { feature } from "topojson-client";
 import axios from "axios";
 import { geoKavrayskiy7 } from "d3-geo-projection";
@@ -72,9 +73,11 @@ export default class WorldMap extends Component {
     }
 
     render() {
+        const { loading } = this.props;
         return (
             <div className="map-box">
                 <canvas className="map" ref={this.refMap} />
+                {loading ? <Spin tip="Loading..." /> : <></>}
             </div>
         );
     }

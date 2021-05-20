@@ -3,16 +3,23 @@ import Axios from "axios";
 import SatSetting from "./SatSetting";
 import SatelliteList from "./SatelliteList";
 import WorldMap from "./WorldMap";
-import { NEARBY_SATELLITE, STARLINK_CATEGORY, SAT_API_KEY } from "../constant";
+import {
+    NEARBY_SATELLITE,
+    STARLINK_CATEGORY,
+    SAT_API_KEY,
+    SATELLITE_POSITION_URL,
+} from "../constant";
 
 export default class Main extends Component {
     constructor(props) {
         super(props);
         this.state = {
             satInfo: null,
-            settings: null,
+            settings: undefined,
             loadingSatellites: false,
             selected: [],
+
+            loadingSatPositions: false,
         };
     }
 
@@ -49,8 +56,37 @@ export default class Main extends Component {
     };
 
     // get selected Satellites' movement info to display on the map
-    trackOnClick = () => {
+    trackOnClick = (duration) => {
         console.log(`tracking ${this.state.selected}`);
+
+        const { observerLat, observerLong, observerAlt } = this.state.settings;
+        const endTime = duration * 60;
+
+        // configure loading animation flag
+        this.setState({ loadingSatPositions: true });
+
+        //! for each satellite, send request to get its predicted position
+        const urls = this.state.selected.map((sat) => {
+            const { satid } = sat;
+            const url = `/api${SATELLITE_POSITION_URL}/${satid}/${observerLat}/${observerLong}/${observerAlt}/${endTime}/&apiKey=${SAT_API_KEY}`;
+            return Axios.get(url);
+        });
+
+        Axios.all(urls)
+            .then(
+                Axios.spread((...args) => {
+                    return args.map((item) => item.data);
+                })
+            )
+            .then((res) => {
+                this.setState({
+                    satPositions: res,
+                    loadingSatPositions: false,
+                });
+            })
+            .catch((e) => {
+                console.log("err in fetch satellite position -> ", e.message);
+            });
     };
 
     // maintain the selected list for Satellites
@@ -77,7 +113,8 @@ export default class Main extends Component {
     };
 
     render() {
-        const { satInfo, loadingSatellites, selected } = this.state;
+        const { satInfo, loadingSatellites, selected, loadingSatPositions } =
+            this.state;
         return (
             <div className="main">
                 <div className="left-side">
@@ -91,7 +128,7 @@ export default class Main extends Component {
                     />
                 </div>
                 <div className="right-side">
-                    <WorldMap />
+                    <WorldMap loading={loadingSatPositions} />
                 </div>
             </div>
         );
