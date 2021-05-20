@@ -48,32 +48,36 @@ export default class Main extends Component {
             });
     };
 
+    // get selected Satellites' movement info to display on the map
     trackOnClick = () => {
         console.log(`tracking ${this.state.selected}`);
     };
 
+    // maintain the selected list for Satellites
     addOrRemove = (item, status) => {
         let { selected: list } = this.state;
         const found = list.some((entry) => entry.satid === item.satid);
 
+        // selected new item
         if (status && !found) {
             list.push(item);
         }
 
+        // unselect an item
         if (!status && found) {
             list = list.filter((entry) => {
                 return entry.satid !== item.satid;
             });
         }
 
-        console.log(list);
+        //console.log(list);
         this.setState({
             selected: list,
         });
     };
 
     render() {
-        const { satInfo, loadingSatellites } = this.state;
+        const { satInfo, loadingSatellites, selected } = this.state;
         return (
             <div className="main">
                 <div className="left-side">
@@ -82,7 +86,7 @@ export default class Main extends Component {
                         satInfo={satInfo}
                         loading={loadingSatellites}
                         onSelectionChange={this.addOrRemove}
-                        disableTrack={this.state.selected.length === 0}
+                        disableTrack={selected.length === 0}
                         trackOnclick={this.trackOnClick}
                     />
                 </div>
