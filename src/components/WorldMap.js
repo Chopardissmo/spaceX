@@ -89,13 +89,16 @@ export default class WorldMap extends Component {
     }
 
     render() {
-        const { loading, refTrack } = this.props;
         return (
             <div className="map-box">
+                {
+                    //! first canvas: the initial world map
+                    //! second canvas: the view with satellites' position
+                }
                 <canvas className="map" ref={this.refMap} />
-                <canvas className="track" ref={refTrack} />
+                <canvas className="track" ref={this.props.refTrack} />
                 <div className="hint"></div>
-                {loading ? <Spin tip="Loading..." /> : <></>}
+                {this.props.loading ? <Spin tip="Loading..." /> : <></>}
             </div>
         );
     }

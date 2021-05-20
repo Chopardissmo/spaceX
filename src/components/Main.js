@@ -25,9 +25,10 @@ export default class Main extends Component {
         super(props);
         this.state = {
             satInfo: null,
-            settings: undefined,
+            settings: null,
             loadingSatellites: false,
             selected: [],
+            satPositions: null,
             loadingSatPositions: false,
         };
         this.refTrack = React.createRef();
